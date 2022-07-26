@@ -21,7 +21,7 @@ public class Main {
                 status = true;
             }
             Person firstPer = new Person (name, age);
-            hTable.insertPerson(firstPer);
+            hTable.insertPerson(firstPer, firstPer.getName());
             Person p = hTable.getPerson("bryanwang");
             System.out.println(p.getName() + " " + p.getAge());
             hTable.deletePerson("bryanwang");

@@ -27,12 +27,18 @@ public class hashTable {
         return result;
     }
 
-    public void insertPerson(Person p)
+    public void insertPerson(Person p, String name)
     {
         int code = translateString(p.getName());
         int uniqueIndex = translateInt(code, getLength());
         p.setCode(code);
         getArray()[uniqueIndex] = p;
+        extendArray(uniqueIndex, p);
+
+    }
+
+    public void extendArray(int uniqueIndex, Person p)
+    {
         count++;
         if(count >= getLength()/2)
         {
@@ -64,15 +70,15 @@ public class hashTable {
         array[uniqueIndex] = null;
     }
 
-    public Person[] getArray()
+    private Person[] getArray()
     {
         return array;
     }
-    public void setArray(Person[] newArray)
+    private void setArray(Person[] newArray)
     {
         array = newArray;
     }
-    public int getLength()
+    private int getLength()
     {
         return array.length;
     }
