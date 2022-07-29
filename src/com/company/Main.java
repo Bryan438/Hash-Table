@@ -4,14 +4,14 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-        hashTable hTable = new hashTable();
+        hashTable hTable = new hashTable <Person>();
         Scanner console = new Scanner(System.in);
 
 
         boolean status = false;
         while(status == false)
         {
-            System.out.println("Name?, type quit to quit");
+            System.out.println("Name? type quit to quit");
             String name = console.next();
             System.out.println("Age?");
             int age = console.nextInt();
@@ -19,12 +19,10 @@ public class Main {
             if(name.equals("quit"))
             {
                 status = true;
+                continue;
             }
-            Person firstPer = new Person (name, age);
+            Person firstPer = new Person(name, age);
             hTable.insertPerson(firstPer, firstPer.getName());
-            Person p = hTable.getPerson("bryanwang");
-            System.out.println(p.getName() + " " + p.getAge());
-            hTable.deletePerson("bryanwang");
         }
 
     }

@@ -1,20 +1,61 @@
 package com.company;
+import java.util.*;
 
-public class hashTable {
-    private Person[] array = new Person [10];
+public class hashTable<E> {
+
+
+    private Object[] buffer;
     private int count = 0;
 
-    public int translateString(String code)
+    class Wrapper{
+        private String key;
+        private int code;
+        private Object obj;
+
+        public void setKey(String k) {
+            key = k;
+        }
+
+        public void setCode(int c) {
+            code = c;
+        }
+
+        public void setObj(Object e) {
+            obj = e;
+        }
+
+        public int getCode() {
+            return code;
+        }
+        public E getObj()
+        {
+            return (E)obj;
+        }
+    }
+
+    public hashTable()
     {
-        String part = code.substring(0, 2) + code.substring(code.length() - 2, code.length());
+        buffer = new Object [10];
+    }
+    private int translateString(String code)
+    {
+        String key = "";
+        if(code.length() == 1)
+        {
+            key = code.substring(0,1) + code.substring(0,1) + code.substring(0,1) + code.substring(0,1);
+        }
+        else {
+            key = code.substring(0, 2) + code.substring(code.length() - 2, code.length());
+        }
+
         int i = 0;
-        int val = part.charAt(i);
-        while(i < part.length() - 1) {
+        int val = key.charAt(i);
+        while(i < key.length() - 1) {
             i++;
             System.out.println(Integer.toHexString(val));
             val = val << 8;
             System.out.println(Integer.toHexString(val));
-            int val2 = part.charAt(i);
+            int val2 = key.charAt(i);
             System.out.println(Integer.toHexString(val2));
             val = val + val2;
             System.out.println(Integer.toHexString(val));
@@ -22,64 +63,60 @@ public class hashTable {
         return val;
     }
 
-    public int translateInt (int code, int size) {
+    private int translateInt (int code, int size) {
         int result = code % size;
         return result;
     }
 
-    public void insertPerson(Person p, String name)
+    public void insertPerson(E p, String name)
     {
-        int code = translateString(p.getName());
-        int uniqueIndex = translateInt(code, getLength());
-        p.setCode(code);
-        getArray()[uniqueIndex] = p;
-        extendArray(uniqueIndex, p);
+        int code = translateString(name);
+        int uniqueIndex = translateInt(code, buffer.length);
+        Wrapper wrapper = new Wrapper();
+        wrapper.setCode(code);
+        wrapper.setObj(p);
+        putEleAt(uniqueIndex, wrapper);
+        extendArray(uniqueIndex, wrapper);
 
     }
 
-    public void extendArray(int uniqueIndex, Person p)
+    private void putEleAt(int pos, Object obj) {
+        buffer[pos] = obj;
+    }
+
+    private void extendArray(int uniqueIndex, Wrapper w)
     {
         count++;
-        if(count >= getLength()/2)
+        if(count >= buffer.length/2)
         {
-            Person [] newArray = new Person [getLength() * 2];
-            Person [] oldArray = getArray();
-            for(int i = 0; i < oldArray.length; i++)
+            Object[] newBuffer = new Object[buffer.length*2];
+
+            for(int i = 0; i < buffer.length; i++)
             {
-                if(oldArray[i] != null)
+                if(buffer[i] != null)
                 {
-                    uniqueIndex = translateInt(p.getCode(), newArray.length);
-                    newArray[uniqueIndex] = p;
+                    uniqueIndex = translateInt(w.getCode(), newBuffer.length);
+                    newBuffer[uniqueIndex] = w;
                 }
             }
-            setArray(newArray);
+            buffer = newBuffer;
         }
     }
 
-    public Person getPerson (String name)
+    public E getPerson (String name)
     {
         int code = translateString(name);
-        int uniqueIndex = translateInt(code, getLength());
-        return array[uniqueIndex];
+        int uniqueIndex = translateInt(code, buffer.length);
+        return ((Wrapper)buffer[uniqueIndex]).getObj();
     }
 
     public void deletePerson (String name)
     {
         int code = translateString(name);
-        int uniqueIndex = translateInt(code, getLength());
-        array[uniqueIndex] = null;
+        int uniqueIndex = translateInt(code, buffer.length);
+        buffer[uniqueIndex] = null;
     }
 
-    private Person[] getArray()
-    {
-        return array;
-    }
-    private void setArray(Person[] newArray)
-    {
-        array = newArray;
-    }
-    private int getLength()
-    {
-        return array.length;
-    }
+
+
 }
